@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUMIT – טופס הצטרפות</title>
+<style>
+:root{
+  --ink:#12213a;
+  --muted:#6b7280;
+  --line:#dbe2ea;
+  --soft:#f6f8fb;
+  --accent:#0f67d8;
+  --accent2:#10a5f5;
+  --ok:#0b8f67;
+  --danger:#b42318;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial, "Helvetica Neue", sans-serif;
+  background:#eef3f8;
+  color:var(--ink);
+}
+.app{
+  max-width:1180px;
+  margin:28px auto;
+  padding:0 18px 50px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  align-items:center;
+  background:white;
+  padding:22px 26px;
+  border-radius:24px;
+  box-shadow:0 10px 35px rgba(18,33,58,.08);
+  margin-bottom:18px;
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-logo{width:145px;height:auto;display:block}
+.brandmark{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--ink);position:relative;flex:0 0 auto;
+}
+.brandmark:before{
+  content:"";position:absolute;inset:13px 10px 12px;
+  border:3px solid #fff;border-top:none;border-radius:0 0 26px 26px;
+}
+.brandmark:after{
+  content:"";position:absolute;width:20px;height:20px;
+  border-left:3px solid #fff;border-top:3px solid #fff;
+  transform:rotate(45deg);right:15px;top:12px;
+}
+.brand h1{margin:0;font-size:30px;letter-spacing:4px}
+.brand small{display:block;color:var(--muted);margin-top:4px;letter-spacing:0}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button{
+  border:0;border-radius:12px;padding:11px 16px;
+  font-weight:700;cursor:pointer;font-size:14px
+}
+button.primary{background:var(--accent);color:#fff}
+button.secondary{background:#e9f1fb;color:var(--accent)}
+button.ghost{background:var(--soft);color:var(--ink)}
+.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
+.card{
+  background:white;border-radius:var(--radius);
+  padding:20px;box-shadow:0 8px 28px rgba(18,33,58,.06);
+  margin-bottom:14px;
+}
+.card h2{font-size:18px;margin:0 0 18px}
+.card h3{font-size:15px;margin:17px 0 10px;color:#28415f}
+.section-note{color:var(--muted);font-size:13px;margin-top:-9px;margin-bottom:16px}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.formgrid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+label{font-size:13px;font-weight:700;color:#344861;display:block}
+input,select,textarea{
+  width:100%;margin-top:7px;padding:11px 12px;border:1px solid var(--line);
+  border-radius:11px;background:#fff;font:inherit;color:var(--ink);outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,103,216,.10)}
+textarea{min-height:82px;resize:vertical}
+.radio-row{display:flex;gap:9px;flex-wrap:wrap}
+.choice{
+  border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+  background:#fff;display:flex;gap:8px;align-items:center;font-size:13px
+}
+.choice input{width:auto;margin:0}
+.summary{
+  position:sticky;top:18px;
+}
+.badge{
+  display:inline-block;padding:6px 10px;border-radius:999px;
+  background:#e9f7f2;color:var(--ok);font-size:12px;font-weight:700
+}
+.kv{display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid #edf0f4;font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--muted)}
+.timeline{margin:8px 0 0;padding:0;list-style:none}
+.timeline li{position:relative;padding:0 26px 18px 0}
+.timeline li:before{content:"";position:absolute;right:5px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.timeline li:after{content:"";position:absolute;right:9px;top:15px;width:2px;height:calc(100% - 8px);background:#cfe0f5}
+.timeline li:last-child:after{display:none}
+.timeline b{display:block;font-size:13px}
+.timeline span{font-size:12px;color:var(--muted)}
+.signature-wrap{border:1px dashed #aeb9c6;border-radius:14px;padding:10px;background:#fbfcfe}
+#signature{width:100%;height:150px;display:block;touch-action:none;background:white;border-radius:10px}
+.small{font-size:12px;color:var(--muted)}
+.print-only{display:none}
+.footer-note{
+  background:linear-gradient(90deg,var(--ink),#0f2e5e);
+  color:white;border-radius:18px;padding:18px 20px;font-size:13px;line-height:1.7
+}
+
+/* Compact A4 PDF summary - hidden during normal online use */
+#printSummary{display:none}
+.ps-head{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--ink);padding-bottom:8px;margin-bottom:10px}
+.ps-brand{display:flex;align-items:center;gap:10px}
+.ps-brand .brandmark{width:34px;height:34px}
+.ps-brand .brandmark:before{inset:9px 7px 8px;border-width:2px}
+.ps-brand .brandmark:after{width:13px;height:13px;right:10px;top:8px;border-width:2px}
+.ps-title{font-size:20px;font-weight:800;letter-spacing:2px}
+.ps-sub{font-size:9px;color:var(--muted);margin-top:2px}
+.ps-date{font-size:9px;color:var(--muted)}
+.ps-section{border:1px solid #dce3ec;border-radius:9px;padding:8px 10px;margin-bottom:7px;break-inside:avoid}
+.ps-section h2{font-size:11px;margin:0 0 6px;color:var(--ink)}
+.ps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px 12px}
+.ps-grid.three{grid-template-columns:repeat(4,1fr)}
+.ps-field{min-width:0}
+.ps-label{font-size:7.5px;color:var(--muted);font-weight:700;margin-bottom:1px}
+.ps-value{font-size:9.5px;font-weight:700;overflow-wrap:anywhere}
+.ps-table{width:100%;border-collapse:collapse;font-size:9px;text-align:center}
+.ps-table th,.ps-table td{border:1px solid #dde4ec;padding:4px 5px}
+.ps-table th{background:#f4f7fb;font-size:8px}
+.ps-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ps-step{border:1px solid #d8e4f2;background:#f8fbff;border-radius:8px;padding:6px;text-align:center}
+.ps-step b{display:block;font-size:10px}
+.ps-step span{font-size:7.5px;color:var(--muted)}
+.ps-notes{font-size:8.5px;line-height:1.35;white-space:pre-wrap}
+.ps-declaration{font-size:8px;line-height:1.4}
+.ps-sign-row{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:10px;align-items:end;margin-top:7px}
+.ps-signature{height:44px;border-bottom:1px solid #7f8b99;display:flex;align-items:flex-end;justify-content:center}
+.ps-signature img{max-height:42px;max-width:100%}
+.ps-footer{font-size:7.5px;color:var(--muted);text-align:center;margin-top:5px}
+
+
+.move-flow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.move-stage{border:1px solid #dbe6f3;background:#f8fbff;border-radius:14px;padding:14px}
+.move-stage.full{grid-column:1/-1}
+.move-stage-title{font-size:13px;font-weight:800;color:#28415f;margin-bottom:10px}
+.move-stage .formgrid{gap:10px}
+@media(max-width:700px){.move-flow{grid-template-columns:1fr}.move-stage.full{grid-column:auto}}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .summary{position:static}
+  .formgrid,.formgrid.three{grid-template-columns:1fr}
+  .topbar{align-items:flex-start;flex-direction:column}
+}
+@media print{
+  @page{
+    size:A4 portrait;
+    margin:10mm 14mm;
+  }
+
+  html, body{
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  body{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  .app{
+    width:auto!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+
+  .topbar,.grid{
+    display:none!important;
+  }
+
+  #printSummary{
+    display:block!important;
+    direction:rtl;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    color:#12213a;
+    font-family:Arial,"Helvetica Neue",sans-serif;
+    overflow:visible!important;
+    transform:none!important;
+  }
+
+  .ps-head{
+    padding-bottom:8px!important;
+    margin-bottom:7px!important;
+  }
+
+  .ps-brand .brandmark{
+    width:36px!important;
+    height:36px!important;
+  }
+
+  .ps-title{font-size:21px!important}
+  .ps-sub,.ps-date{font-size:9px!important}
+
+  .ps-section{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:7px 9px!important;
+    margin:0 0 6px 0!important;
+    border-radius:8px!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    overflow:hidden!important;
+  }
+
+  .ps-section h2{
+    font-size:11px!important;
+    margin:0 0 5px!important;
+  }
+
+  .ps-grid{
+    width:100%!important;
+    min-width:0!important;
+    column-gap:7px!important;
+    row-gap:4px!important;
+  }
+
+  .ps-field{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+
+  .ps-label{font-size:7.8px!important}
+
+  .ps-value{
+    font-size:9.2px!important;
+    line-height:1.2!important;
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+
+  .ps-table{
+    width:100%!important;
+    max-width:100%!important;
+    table-layout:fixed!important;
+    border-collapse:collapse!important;
+    font-size:9px!important;
+  }
+
+  .ps-table th,.ps-table td{
+    padding:3.5px 4px!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .ps-table th{font-size:8px!important}
+
+  .ps-timeline{
+    width:100%!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+
+  .ps-step{
+    min-width:0!important;
+    padding:5px 4px!important;
+    overflow:hidden!important;
+  }
+
+  .ps-step b{font-size:9.6px!important}
+  .ps-step span{font-size:7.5px!important}
+
+  .ps-notes{
+    font-size:8.4px!important;
+    line-height:1.3!important;
+    max-height:26mm!important;
+    overflow:hidden!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .ps-declaration{
+    font-size:7.9px!important;
+    line-height:1.3!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .ps-sign-row{
+    width:100%!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.15fr)!important;
+    gap:7px!important;
+    margin-top:5px!important;
+  }
+
+  .ps-signature{
+    height:33px!important;
+    min-width:0!important;
+  }
+
+  .ps-signature img{
+    max-height:31px!important;
+    max-width:100%!important;
+  }
+
+  .ps-footer{
+    font-size:7.2px!important;
+    margin-top:2px!important;
+  }
+
+  *, *::before, *::after{
+    box-sizing:border-box!important;
+  }
+
+  img,canvas,svg{
+    max-width:100%!important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="data:image/png;base64,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" alt="SUMIT">
+      <div>
+        <small>טופס הצטרפות והטמעה למשרדי רו"ח והנהלת חשבונות</small>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="ghost" onclick="clearForm()">נקה</button>
+      <button class="secondary" onclick="loadExample()">טען דוגמה</button>
+      <button class="primary" onclick="updatePrintSummary(); window.print()">הפק PDF / הדפס</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <main>
+      <section class="card">
+        <h2>1. פרטי המשרד</h2>
+        <div class="formgrid">
+          <label>שם המשרד המלא<input id="officeName" placeholder="לדוגמה: א.ב. כהן ושות'"></label>
+          <label>ח.פ. / עוסק<input id="companyId" placeholder="מספר מזהה"></label>
+          <label>איש קשר ראשי<input id="contactName"></label>
+          <label>טלפון<input id="contactPhone" inputmode="tel"></label>
+          <label>מייל<input id="contactEmail" type="email"></label>
+          <label>תאריך<input id="joinDate" type="date"></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. ראש חץ / מוביל ההטמעה</h2>
+        <div class="formgrid">
+          <label>שם מלא<input id="championName"></label>
+          <label>טלפון<input id="championPhone" inputmode="tel"></label>
+          <label>מייל<input id="championEmail" type="email"></label>
+          <label>תפקיד<input id="championRole" placeholder="מנהלת חשבונות / שותף / מנהל משרד"></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>3. הרכב התיקים במשרד</h2>
+        <div class="formgrid three">
+          <label>כפולה<input id="totalDouble" type="number" min="0" value="0"></label>
+          <label>חד-צידי<input id="totalSingle" type="number" min="0" value="0"></label>
+          <label>פטורים<input id="totalExempt" type="number" min="0" value="0"></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>4. מסלול, מעבר ותנאים</h2>
+        <div class="formgrid">
+          <label>מסלול SUMIT
+            <select id="plan"><option value="">בחר מסלול</option><option>זהב</option><option>יהלום</option><option>אחר</option></select>
+          </label>
+          <label>מודול
+            <select id="module"><option>Books SUMIT</option><option>Books + Biz SUMIT</option><option>Biz SUMIT</option></select>
+          </label>
+        </div>
+        <h3>שיטת מעבר</h3>
+        <div class="radio-row">
+          <label class="choice"><input type="radio" name="transition" value="מעבר מדורג" checked> מעבר מדורג</label>
+          <label class="choice"><input type="radio" name="transition" value="מעבר מואץ"> מעבר מואץ</label>
+          <label class="choice"><input type="radio" name="transition" value="מעבר מיידי"> מעבר מיידי</label>
+        </div>
+        <h3>לוחות זמנים וכמויות מעבר</h3>
+        <div class="move-flow">
+          <div class="move-stage">
+            <div class="move-stage-title">מעבר ראשון</div>
+            <label>תאריך מעבר ראשון<input id="firstMove" type="date"></label>
+            <div class="formgrid" style="margin-top:10px">
+              <label>כמות כפולה<input id="firstMoveDouble" type="number" min="0" value="0"></label>
+              <label>כמות חד צידי<input id="firstMoveSingle" type="number" min="0" value="0"></label>
+            </div>
+          </div>
+          <div class="move-stage">
+            <div class="move-stage-title">סיום פיילוט</div>
+            <label>תאריך סיום פיילוט<input id="pilotEnd" type="date"></label>
+          </div>
+          <div class="move-stage">
+            <div class="move-stage-title">מעבר שני / מלא</div>
+            <label>תאריך מעבר מלא<input id="secondMove" type="date"></label>
+            <div class="formgrid" style="margin-top:10px">
+              <label>כמות כפולה<input id="secondMoveDouble" type="number" min="0" value="0"></label>
+              <label>כמות חד צידי<input id="secondMoveSingle" type="number" min="0" value="0"></label>
+            </div>
+          </div>
+          <div class="move-stage">
+            <div class="move-stage-title">חיוב</div>
+            <label>תאריך חיוב ראשון<input id="firstBilling" type="date"></label>
+          </div>
+        </div>
+        <h3>תנאים והערות</h3>
+        <label>הערות מסחריות / תפעוליות
+          <textarea id="notes" placeholder="לדוגמה: חריגה מאושרת בכמות התיקים, דגשים להעברה, תיאום עם צוות ההטמעה"></textarea>
+        </label>
+        <div style="margin-top:14px" class="small">
+          המערכת מחייבת באופן אוטומטי את כל התיקים הפעילים בראשון לכל חודש, עבור אותו חודש.
+          יש לוודא שמסלול התמחור שנבחר תואם את היקף הפעילות בפועל.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>5. הצהרת התחייבות משותפת</h2>
+        <p style="line-height:1.8;margin-top:0">
+          אנחנו ב-SUMIT מתחייבים לספק מערכת הנהלת חשבונות מתקדמת, ליווי אישי וצוות תמיכה מקצועי.
+          המשרד מתחייב לשתף פעולה בתהליך ההטמעה ולתת לנו את ההזדמנות להפוך את תהליך המעבר לסיפור הצלחה.
+        </p>
+        <div class="formgrid">
+          <label>שם המאשר/ת<input id="signerName"></label>
+          <label>תפקיד<input id="signerRole"></label>
+        </div>
+        <h3>חתימה</h3>
+        <div class="signature-wrap">
+          <canvas id="signature"></canvas>
+        </div>
+        <div class="actions no-print" style="margin-top:10px">
+          <button class="ghost" onclick="clearSignature()">נקה חתימה</button>
+        </div>
+      </section>
+    </main>
+
+    <aside>
+      <section class="card summary">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+          <h2 style="margin:0">סיכום הצטרפות</h2>
+          <span class="badge">LIVE</span>
+        </div>
+        <div style="margin-top:14px">
+          <div class="kv"><span>משרד</span><b id="sOffice">—</b></div>
+          <div class="kv"><span>איש קשר</span><b id="sContact">—</b></div>
+          <div class="kv"><span>ראש חץ</span><b id="sChampion">—</b></div>
+          <div class="kv"><span>מסלול</span><b id="sPlan">—</b></div>
+          <div class="kv"><span>הרכב משרד</span><b id="sPortfolio">0 / 0 / 0</b></div>
+          <div class="kv"><span>שיטת מעבר</span><b id="sTransition">מעבר מדורג</b></div>
+        </div>
+
+        <h3>ציר זמן</h3>
+        <ul class="timeline">
+          <li><b id="t1">לא נקבע</b><span>מעבר ראשון</span></li>
+          <li><b id="tPilotEnd">לא נקבע</b><span>סיום פיילוט</span></li>
+          <li><b id="t2">לא נקבע</b><span>מעבר מלא</span></li>
+          <li><b id="t3">לא נקבע</b><span>חיוב ראשון</span></li>
+        </ul>
+
+        <div class="footer-note">
+          <b>SUMIT</b><br>
+          מערכת הנהלת חשבונות וניהול עסק בענן.<br>
+          מסמך זה מרכז את פרטי ההצטרפות, הפיילוט, ההטמעה ולוחות הזמנים שסוכמו עם המשרד.
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section id="printSummary" aria-label="סיכום הצטרפות להדפסה">
+    <div class="ps-head">
+      <div class="ps-brand">
+        <img src="data:image/png;base64,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" alt="SUMIT" style="width:92px;height:auto">
+        <div class="ps-sub">סיכום הצטרפות, פיילוט והטמעה</div>
+      </div>
+      <div class="ps-date">תאריך: <b id="pJoinDate">—</b></div>
+    </div>
+
+    <div class="ps-section">
+      <h2>פרטי המשרד</h2>
+      <div class="ps-grid">
+        <div class="ps-field"><div class="ps-label">שם המשרד</div><div class="ps-value" id="pOffice">—</div></div>
+        <div class="ps-field"><div class="ps-label">ח.פ. / עוסק</div><div class="ps-value" id="pCompanyId">—</div></div>
+        <div class="ps-field"><div class="ps-label">איש קשר</div><div class="ps-value" id="pContact">—</div></div>
+        <div class="ps-field"><div class="ps-label">טלפון</div><div class="ps-value" id="pContactPhone">—</div></div>
+        <div class="ps-field"><div class="ps-label">מייל</div><div class="ps-value" id="pContactEmail">—</div></div>
+        <div class="ps-field"><div class="ps-label">ראש חץ</div><div class="ps-value" id="pChampion">—</div></div>
+        <div class="ps-field"><div class="ps-label">טלפון ראש חץ</div><div class="ps-value" id="pChampionPhone">—</div></div>
+        <div class="ps-field"><div class="ps-label">מייל / תפקיד ראש חץ</div><div class="ps-value" id="pChampionMeta">—</div></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <h2>הרכב התיקים במשרד</h2>
+      <table class="ps-table">
+        <thead><tr><th></th><th>כפולה</th><th>חד-צידי</th><th>פטורים</th><th>סה"כ</th></tr></thead>
+        <tbody>
+          <tr><th>הרכב המשרד</th><td id="pTotalDouble">0</td><td id="pTotalSingle">0</td><td id="pTotalExempt">0</td><td id="pTotalSum">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ps-section">
+      <h2>מסלול ותהליך המעבר</h2>
+      <div class="ps-grid three">
+        <div class="ps-field"><div class="ps-label">מסלול SUMIT</div><div class="ps-value" id="pPlan">—</div></div>
+        <div class="ps-field"><div class="ps-label">מודול</div><div class="ps-value" id="pModule">—</div></div>
+        <div class="ps-field"><div class="ps-label">שיטת מעבר</div><div class="ps-value" id="pTransition">—</div></div>
+      </div>
+      <div class="ps-timeline" style="margin-top:7px">
+        <div class="ps-step"><b id="pFirstMove">—</b><span>מעבר ראשון</span><div class="ps-value"><span id="pFirstMoveDouble">0</span> כפולה | <span id="pFirstMoveSingle">0</span> חד צידי</div></div>
+        <div class="ps-step"><b id="pPilotEnd">—</b><span>סיום פיילוט</span></div>
+        <div class="ps-step"><b id="pSecondMove">—</b><span>מעבר שני / מלא</span><div class="ps-value"><span id="pSecondMoveDouble">0</span> כפולה | <span id="pSecondMoveSingle">0</span> חד צידי</div></div>
+      </div>
+      <div class="ps-grid three" style="margin-top:6px">
+        <div class="ps-field"><div class="ps-label">תאריך חיוב ראשון</div><div class="ps-value" id="pFirstBilling">—</div></div>
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <h2>הערות ותנאים שסוכמו</h2>
+      <div class="ps-notes" id="pNotes">ללא הערות נוספות.</div>
+      <div class="ps-declaration" style="margin-top:5px;border-top:1px solid #e3e7ed;padding-top:5px">
+        המערכת מחייבת באופן אוטומטי את כל התיקים הפעילים בראשון לכל חודש, עבור אותו חודש.
+        יש לוודא שמסלול התמחור שנבחר תואם את היקף הפעילות בפועל.
+      </div>
+    </div>
+
+    <div class="ps-section">
+      <h2>הצהרת התחייבות משותפת ואישור</h2>
+      <div class="ps-declaration">
+        אנחנו ב-SUMIT מתחייבים לספק מערכת הנהלת חשבונות מתקדמת, ליווי אישי וצוות תמיכה מקצועי.
+        המשרד מתחייב לשתף פעולה בתהליך ההטמעה ולתת לנו את ההזדמנות להפוך את תהליך המעבר לסיפור הצלחה.
+      </div>
+      <div class="ps-sign-row">
+        <div><div class="ps-label">שם המאשר/ת</div><div class="ps-value" id="pSigner">—</div></div>
+        <div><div class="ps-label">תפקיד</div><div class="ps-value" id="pSignerRole">—</div></div>
+        <div><div class="ps-label">חתימה</div><div class="ps-signature"><img id="pSignature" alt=""></div></div>
+      </div>
+    </div>
+
+    <div class="ps-footer">SUMIT | מסמך סיכום הצטרפות והטמעה</div>
+  </section>
+
+</div>
+
+<script>
+const ids = [
+  'officeName','companyId','contactName','contactPhone','contactEmail','joinDate',
+  'championName','championPhone','championEmail','championRole',
+  'totalDouble','totalSingle','totalExempt',
+  'plan','module','firstMove','pilotEnd','firstMoveDouble','firstMoveSingle','secondMove','secondMoveDouble','secondMoveSingle','firstBilling','notes',
+  'signerName','signerRole'
+];
+
+function val(id){ return document.getElementById(id).value.trim(); }
+function fmtDate(s){
+  if(!s) return 'לא נקבע';
+  const [y,m,d] = s.split('-');
+  return `${d}.${m}.${y}`;
+}
+function transitionVal(){
+  const r = document.querySelector('input[name="transition"]:checked');
+  return r ? r.value : '—';
+}
+function updateSummary(){
+  document.getElementById('sOffice').textContent = val('officeName') || '—';
+  document.getElementById('sContact').textContent = val('contactName') || '—';
+  document.getElementById('sChampion').textContent = val('championName') || '—';
+  document.getElementById('sPlan').textContent = val('plan') || '—';
+  document.getElementById('sPortfolio').textContent =
+    `${val('totalDouble')||0} כפולה | ${val('totalSingle')||0} חד-צידי | ${val('totalExempt')||0} פטורים`;
+  document.getElementById('sTransition').textContent = transitionVal();
+  document.getElementById('t1').textContent = fmtDate(val('firstMove'));
+  document.getElementById('tPilotEnd').textContent = fmtDate(val('pilotEnd'));
+  document.getElementById('t2').textContent = fmtDate(val('secondMove'));
+  document.getElementById('t3').textContent = fmtDate(val('firstBilling'));
+}
+ids.forEach(id => document.getElementById(id).addEventListener('input', updateSummary));
+document.querySelectorAll('input[name="transition"]').forEach(x => x.addEventListener('change', updateSummary));
+
+function loadExample(){
+  const data = {
+    officeName:'א.ו.ר חדירי בע"מ', companyId:'514564012',
+    contactName:'חוסאם גרגורה', contactPhone:'0545860742', contactEmail:'hossam@ask-cpa.co.il',
+    championName:"לינא פראג'", championPhone:'0525353484',
+    totalDouble:'100', totalSingle:'280', totalExempt:'150',
+    firstMoveDouble:'5', firstMoveSingle:'5', secondMoveDouble:'95', secondMoveSingle:'275',
+    plan:'יהלום', module:'Books SUMIT',
+    firstMove:'2026-08-26', pilotEnd:'2026-09-26', secondMove:'2026-10-01', firstBilling:'2026-10-01',
+    notes:'מעבר מדורג. לאחר תקופת הפיילוט יועברו יתר התיקים.'
+  };
+  Object.entries(data).forEach(([k,v]) => document.getElementById(k).value = v);
+  document.querySelector('input[name="transition"][value="מעבר מדורג"]').checked = true;
+  updateSummary();
+}
+function clearForm(){
+  ids.forEach(id => {
+    const el=document.getElementById(id);
+    if(el.type==='number') el.value='0';
+    else if(el.tagName==='SELECT') el.selectedIndex=0;
+    else el.value='';
+  });
+  document.querySelector('input[name="transition"][value="מעבר מדורג"]').checked = true;
+  clearSignature();
+  updateSummary();
+}
+
+
+function numVal(id){
+  const n = parseInt(val(id) || '0', 10);
+  return Number.isFinite(n) ? n : 0;
+}
+function setText(id, text){
+  const el = document.getElementById(id);
+  if(el) el.textContent = text || '—';
+}
+function updatePrintSummary(){
+  setText('pJoinDate', fmtDate(val('joinDate')));
+  setText('pOffice', val('officeName'));
+  setText('pCompanyId', val('companyId'));
+  setText('pContact', val('contactName'));
+  setText('pContactPhone', val('contactPhone'));
+  setText('pContactEmail', val('contactEmail'));
+  setText('pChampion', val('championName'));
+  setText('pChampionPhone', val('championPhone'));
+  const championMeta = [val('championEmail'), val('championRole')].filter(Boolean).join(' | ');
+  setText('pChampionMeta', championMeta);
+
+  const td=numVal('totalDouble'), ts=numVal('totalSingle'), te=numVal('totalExempt');
+  setText('pTotalDouble', String(td)); setText('pTotalSingle', String(ts)); setText('pTotalExempt', String(te)); setText('pTotalSum', String(td+ts+te));
+
+  setText('pPlan', val('plan'));
+  setText('pModule', val('module'));
+  setText('pTransition', transitionVal());
+  setText('pFirstMove', fmtDate(val('firstMove')));
+  setText('pPilotEnd', fmtDate(val('pilotEnd')));
+  setText('pFirstMoveDouble', String(numVal('firstMoveDouble')));
+  setText('pFirstMoveSingle', String(numVal('firstMoveSingle')));
+  setText('pSecondMoveDouble', String(numVal('secondMoveDouble')));
+  setText('pSecondMoveSingle', String(numVal('secondMoveSingle')));
+  setText('pSecondMove', fmtDate(val('secondMove')));
+  setText('pFirstBilling', fmtDate(val('firstBilling')));
+  setText('pNotes', val('notes') || 'ללא הערות נוספות.');
+  setText('pSigner', val('signerName'));
+  setText('pSignerRole', val('signerRole'));
+
+  const sigImg = document.getElementById('pSignature');
+  if(sigImg && typeof canvas !== 'undefined'){
+    try{ sigImg.src = canvas.toDataURL('image/png'); }catch(e){ sigImg.removeAttribute('src'); }
+  }
+}
+window.addEventListener('beforeprint', updatePrintSummary);
+
+// signature pad
+const canvas = document.getElementById('signature');
+const ctx = canvas.getContext('2d');
+let drawing=false;
+function fitCanvas(){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const img = canvas.toDataURL();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  ctx.lineWidth=2;
+  ctx.lineCap='round';
+  ctx.strokeStyle='#12213a';
+}
+function point(e){
+  const r=canvas.getBoundingClientRect();
+  const t=e.touches?e.touches[0]:e;
+  return {x:t.clientX-r.left,y:t.clientY-r.top};
+}
+function start(e){ drawing=true; const p=point(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+function move(e){ if(!drawing)return; const p=point(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
+function end(){ drawing=false; }
+canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
+canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',end);
+function clearSignature(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+window.addEventListener('resize',fitCanvas);
+fitCanvas();
+updateSummary();
+</script>
+</body>
+</html>
